@@ -1,0 +1,50 @@
+name: CI - Build & Test & Quality (Develop)
+run-name: CI run by ${{ github.actor }} on develop
+on:
+  push:
+    branches: [main]
+
+env:
+  AWS_REGION: eu-north-1
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build_test_and_quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v6
+      
+      - name: Set up node 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      
+      - name: Install project dependencies
+        run: npm install
+      
+      - name: Run test
+        run: npm run test
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: $AWS_REGION
+          role-to-assume: arn:aws:iam::225989349749:role/scc-github-actions-role
+          audience: sts.amazonaws.com
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: front
+          REPOSITORY: scc-frontend
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
