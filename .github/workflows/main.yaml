@@ -39,7 +39,7 @@ jobs:
         
       - name: Build, tag, and push docker image to Amazon ECR
         env:
-          REGISTRY: front
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: scc-frontend
           IMAGE_TAG: ${{ github.sha }}
         run: |
