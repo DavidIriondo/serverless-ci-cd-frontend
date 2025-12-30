@@ -4,14 +4,14 @@ const { BASE_URL } = getEnv();
 export const services = [
   {
     name: "Instance information 💻",
-    url: `${BASE_URL}/back/instance`
+    url: `http://${BASE_URL}/back/instance`
   },
   {
     name: "Creator message 🐱",
-    url: `${BASE_URL}/back/message`
+    url: `http://${BASE_URL}/back/message`
   },
   {
     name: "Health 🖤",
-    url: `${BASE_URL}/back/health`
+    url: `http://${BASE_URL}/back/health`
   }
 ];
