@@ -45,3 +45,14 @@ jobs:
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: Register Backend ECS Task Definition
+        run: |
+          IMAGE_URI="$REGISTRY/$REPOSITORY:$IMAGE_TAG"
+          jq --arg img "$IMAGE_URI" '.containerDefinitions[0].image=$img' ecs/task-definition.json > ecs/task-definition.json
+          aws ecs register-task-definition --cli-input-json file://ecs/task-definition.json
+
+      - name: Deploy Frontend ECS Service
+        run: |
+          aws ecs update-service --cluster scc-cluster --service scc-frontend-service  --force-new-deployment
+
