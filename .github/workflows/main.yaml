@@ -46,13 +46,22 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-      - name: Register Backend ECS Task Definition
+      - name: Download task definition 
         run: |
-          IMAGE_URI="$REGISTRY/$REPOSITORY:$IMAGE_TAG"
-          jq --arg img "$IMAGE_URI" '.containerDefinitions[0].image=$img' ecs/task-definition.json > ecs/task-definition.json
-          aws ecs register-task-definition --cli-input-json file://ecs/task-definition.json
+          aws ecs describe-task-definition --task-definition scc-frontend-task --query "taskDefinition" --output json > task-definition.json
 
-      - name: Deploy Frontend ECS Service
-        run: |
-          aws ecs update-service --cluster scc-cluster --service scc-frontend-service  --force-new-deployment
+      - name: Fill in new image ID in task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json 
+          container-name: scc-frontend 
+          image: $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1 
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: scc-frontend-service
+          cluster: scc-cluster
 
