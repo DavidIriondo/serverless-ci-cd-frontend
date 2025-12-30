@@ -14,7 +14,7 @@ FROM nginx:stable-alpine AS final
 WORKDIR /app
 
 #COPY THE BUILDED APPLICATION TO THIS STAGE
-COPY --from=build /app/build/dist /usr/share/nginx/html
+COPY --from=build /app/build/dist/ /usr/share/nginx/html/
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
