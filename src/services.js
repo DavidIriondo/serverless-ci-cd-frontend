@@ -1,4 +1,4 @@
-import { getEnv } from "../env";
+import { getEnv } from "../public/env";
 const { BASE_URL } = getEnv();
 
 export const services = [
