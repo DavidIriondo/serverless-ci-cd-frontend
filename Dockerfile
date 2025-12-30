@@ -9,19 +9,18 @@ COPY . .
 RUN npm install
 RUN npm run build
 
-###SECOND STEP --> FINAL
-FROM nginx:stable-alpine AS final
+
+#INSTALL NODE TO INSTALL SERVER
+FROM node:24-alpine
+
 WORKDIR /app
 
-#COPY THE BUILDED APPLICATION TO THIS STAGE
-COPY --from=build /app/build/dist/ /usr/share/nginx/html/
+RUN npm install -g serve
 
+COPY --from=build /app/build/dist /app/dist
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-#EXPOSE PORT 80 FRO HTTP
 EXPOSE 80
 
-#RUN APPLICATION
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["serve", "-s", "dist", "-l", "80"]
