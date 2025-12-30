@@ -6,10 +6,9 @@ import { ServicesPage } from "./pages/Service/ServicePage.jsx";
 export function App() {
   return (
     <Router>
-      <ServicesPage path="/front/dashboard" />
+      <ServicesPage path="/" />
     </Router>
   )
 }
-
 
 render(<App />, document.getElementById('app'));

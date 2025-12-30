@@ -19,10 +19,6 @@ COPY --from=build /app/build/dist /usr/share/nginx/html
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-
-#COPY NGINX CONFIG FILE
-COPY .nginx/nginx.conf /etc/nginx/nginx.conf
-
 #EXPOSE PORT 80 FRO HTTP
 EXPOSE 80
 
