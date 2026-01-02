@@ -1,5 +1,5 @@
 name: CI/CD - Build & Test & Quality & Deploy
-run-name: CI run by ${{ github.actor }} on develop
+run-name: CI/CD run by ${{ github.actor }} on develop
 on:
   push:
     branches: [main]
