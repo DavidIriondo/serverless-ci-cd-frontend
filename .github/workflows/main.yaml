@@ -1,4 +1,4 @@
-name: CI - Build & Test & Quality (Develop)
+name: CI/CD - Build & Test & Quality & Deploy
 run-name: CI run by ${{ github.actor }} on develop
 on:
   push:
